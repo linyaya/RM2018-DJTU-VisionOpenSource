@@ -25,13 +25,13 @@ void ArmorFind::process(vector<vector<Point> > contours,const Mat &input,Mat &ou
     for(int i=0;i<contours.size();i++){
         RRect = minAreaRect(contours[i]);
         if((fabs(RRect.angle) < 45.0 && RRect.size.height > RRect.size.width)
-                || (fabs(RRect.angle) > 45.0 && RRect.size.width > RRect.size.height) //must be rectangle???
+                || (fabs(RRect.angle) > 45.0 && RRect.size.width > RRect.size.height) //must be rectangle
                 ){
                 RectfirstResult.push_back(RRect);
         }
     }
     
-    //if there are less than 2 rectangle no armor!
+    //if there are less than 2 rectangle no armorf
     if(RectfirstResult.size() < 2){
         ArmorCenters.clear();
         return;
@@ -48,7 +48,7 @@ void ArmorFind::process(vector<vector<Point> > contours,const Mat &input,Mat &ou
         putText(output,ss.str(),Point(RectResults[i].center.x,RectResults[i].center.y-5),FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0,255,255));
         */
     }
-    GetArmors(output,ismono);
+    GetArmors(output,ismono); //get the center of armor
     for(int i=0;i<ArmorCenters.size();i++){
         DrawCross(output,ArmorCenters[i],20,Scalar(255,0,255),2);
     }
@@ -286,7 +286,7 @@ double ArmorFind::Pointdis(const Point &p1,const Point &p2){
 
 Point ArmorFind::PointBetween(const Point &p1,const Point &p2){
     return Point((p1.x + p2.x) / 2,(p1.y + p2.y) / 2);
-}
+}//centerpoint of two points
 
 /**
   * @brief find the center of a contour

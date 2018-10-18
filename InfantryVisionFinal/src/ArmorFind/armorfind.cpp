@@ -21,24 +21,28 @@ void ArmorFind::process(vector<vector<Point> > contours,const Mat &input,Mat &ou
     output = input.clone();
     RotatedRect RRect;
     // first judgement lightbar contours
+    //make each of the rough contours become a rotatedRect
     for(int i=0;i<contours.size();i++){
         RRect = minAreaRect(contours[i]);
         if((fabs(RRect.angle) < 45.0 && RRect.size.height > RRect.size.width)
-                || (fabs(RRect.angle) > 45.0 && RRect.size.width > RRect.size.height)
+                || (fabs(RRect.angle) > 45.0 && RRect.size.width > RRect.size.height) //must be rectangle???
                 ){
                 RectfirstResult.push_back(RRect);
         }
     }
+    
+    //if there are less than 2 rectangle no armor!
     if(RectfirstResult.size() < 2){
         ArmorCenters.clear();
         return;
     }
-    sort(RectfirstResult.begin(),RectfirstResult.end(),RotateRectSort);
+    
+    sort(RectfirstResult.begin(),RectfirstResult.end(),RotateRectSort);//sort by what?
     GetArmorLights();
     sort(RectResults.begin(),RectResults.end(),RotateRectSort);
     for(int i=0;i<RectResults.size();i++){
         //std::cout<<"("<<RectResults[i].center.x<<","<<RectResults[i].center.y<<")"<<std::endl;
-        ellipse(output,RectResults[i],Scalar(255,0,0),2);
+        ellipse(output,RectResults[i],Scalar(255,0,0),2); //draw function
         /*ostringstream ss;
         ss<<i;
         putText(output,ss.str(),Point(RectResults[i].center.x,RectResults[i].center.y-5),FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(0,255,255));
@@ -79,6 +83,9 @@ void ArmorFind::DrawCross(Mat &img,Point center,int size,Scalar color,int thickn
   * @param none
   * @return none
   */
+
+//delete the rectagle: has some rectangle nearby and larger than 2500
+//want to have cells and get the maxsize
 void ArmorFind::GetArmorLights(){
     size_t size = RectfirstResult.size();
     vector<RotatedRect> Groups;
